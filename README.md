@@ -6,6 +6,13 @@ quel nombre de niveaux), création d'objets, don d'uniques, duplication et suppr
 
 Testé sur Death Must Die buildid Steam 21650210 (Unity 2021.3.11, Mono x64) avec BepInEx 5.4.23.5.
 
+## En jeu
+
+Une ceinture Mythic portant le **GOD affix** (niveau 500), vue dans l'inventaire du jeu : la ligne GOD apparaît
+dans l'infobulle native et les statistiques du personnage à gauche reflètent les bonus.
+
+![GOD affix dans l'inventaire du jeu](docs/screenshots/god-affix-ingame.png)
+
 ## Installation (joueurs)
 
 1. Télécharger `DMDItemEditor-<version>.zip` (il contient BepInEx 5, sa configuration et le plugin).
