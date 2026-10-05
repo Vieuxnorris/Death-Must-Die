@@ -3,7 +3,9 @@
 #   DMDItemEditor-<version>-plugin-only.zip plugin only, for players who already have BepInEx 5
 param(
     [string]$GameDir = "G:\Steam\steamapps\common\Death Must Die",
-    [string]$BepInExVersion = "5.4.23.5"
+    [string]$BepInExVersion = "5.4.23.5",
+    # SHA-256 of BepInEx_win_x64_<version>.zip from the official GitHub release; update it with the version.
+    [string]$BepInExSha256 = "82f9878551030f54657792c0740d9d51a09500eeae1fba21106b0c441e6732c4"
 )
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
@@ -23,6 +25,12 @@ $dll = Join-Path $root "src\DMDItemEditor\bin\Release\netstandard2.1\DMDItemEdit
 $bepZip = Join-Path $dist "BepInEx_win_x64_$BepInExVersion.zip"
 if (-not (Test-Path $bepZip)) {
     Invoke-WebRequest "https://github.com/BepInEx/BepInEx/releases/download/v$BepInExVersion/BepInEx_win_x64_$BepInExVersion.zip" -OutFile $bepZip
+}
+# Refuse a tampered or corrupted download: this archive ships to players inside the release zip.
+$actual = (Get-FileHash $bepZip -Algorithm SHA256).Hash
+if ($actual -ne $BepInExSha256) {
+    Remove-Item $bepZip -Force
+    throw "BepInEx archive hash mismatch: expected $BepInExSha256, got $actual"
 }
 $full = Join-Path $work "full"
 Expand-Archive $bepZip $full -Force
