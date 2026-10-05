@@ -1,0 +1,10 @@
+# Game data and decompiled game code: never commit
+extracted/
+backups/
+*.sav
+
+# Build output
+bin/
+obj/
+*.user
+.vs/
