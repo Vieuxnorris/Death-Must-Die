@@ -1,0 +1,28 @@
+DMD Item Editor : éditeur d'objets pour Death Must Die
+=======================================================
+
+INSTALLATION (Windows, version Steam)
+1. Dans Steam : clic droit sur Death Must Die > Gérer > Parcourir les fichiers locaux.
+   Le dossier qui s'ouvre contient "Death Must Die.exe".
+2. Extraire TOUT le contenu de ce zip dans ce dossier (à côté de "Death Must Die.exe").
+   Accepter de remplacer les fichiers si Windows le demande.
+3. Lancer le jeu normalement depuis Steam.
+4. Une fois dans le jeu (après le menu principal), appuyer sur F8.
+
+Conseil : copier d'abord le dossier de sauvegardes
+   %USERPROFILE%\AppData\LocalLow\Realm Archive\Death Must Die\Saves
+
+SI F8 NE FAIT RIEN
+- Vérifier que le fichier BepInEx\LogOutput.log existe dans le dossier du jeu et contient
+  "DMD Item Editor ... loaded" puis "Update loop running".
+- Si BepInEx était déjà installé : ouvrir BepInEx\config\BepInEx.cfg et mettre
+  HideManagerGameObject = true
+
+DÉSINSTALLER
+D'abord, retirer le GOD affix de tous tes objets (F8) : sans le mod, le jeu supprime au
+chargement les objets qui le portent.
+Puis supprimer du dossier du jeu : le dossier BepInEx, winhttp.dll, doorstop_config.ini,
+.doorstop_version et changelog.txt. Les sauvegardes restent valides ; les uniques modifiés
+reprennent leurs valeurs d'origine.
+
+Le mod modifie les objets de ta sauvegarde. Jeu solo uniquement, à tes risques.

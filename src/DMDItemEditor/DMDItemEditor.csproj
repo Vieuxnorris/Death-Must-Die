@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>DMDItemEditor</AssemblyName>
+    <RootNamespace>DMDItemEditor</RootNamespace>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <Version>0.3.0</Version>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <!-- Override on the command line: dotnet build -p:GameDir="D:\Games\Death Must Die" -->
+    <GameDir Condition="'$(GameDir)' == ''">G:\Steam\steamapps\common\Death Must Die</GameDir>
+    <ManagedDir>$(GameDir)\Death Must Die_Data\Managed</ManagedDir>
+    <BepInExDir>$(GameDir)\BepInEx</BepInExDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx" HintPath="$(BepInExDir)\core\BepInEx.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(BepInExDir)\core\0Harmony.dll" Private="false" />
+    <Reference Include="Death" HintPath="$(ManagedDir)\Death.dll" Private="false" />
+    <Reference Include="Death.Utils" HintPath="$(ManagedDir)\Death.Utils.dll" Private="false" />
+    <Reference Include="Claw.Core" HintPath="$(ManagedDir)\Claw.Core.dll" Private="false" />
+    <Reference Include="UniTask" HintPath="$(ManagedDir)\UniTask.dll" Private="false" />
+    <Reference Include="UnityEngine" HintPath="$(ManagedDir)\UnityEngine.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(ManagedDir)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(ManagedDir)\UnityEngine.IMGUIModule.dll" Private="false" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(ManagedDir)\UnityEngine.InputLegacyModule.dll" Private="false" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(ManagedDir)\UnityEngine.TextRenderingModule.dll" Private="false" />
+  </ItemGroup>
+
+  <!-- Copy the built plugin into the game's BepInEx/plugins folder. -->
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="Exists('$(BepInExDir)') And '$(Deploy)' != 'false'">
+    <MakeDir Directories="$(BepInExDir)\plugins\DMDItemEditor" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\DMDItemEditor" />
+  </Target>
+
+</Project>
