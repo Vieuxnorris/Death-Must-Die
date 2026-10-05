@@ -14,7 +14,9 @@ $work = Join-Path $dist "work"
 Remove-Item $work -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $work | Out-Null
 
-dotnet build $proj -c Release -nologo -p:GameDir="$GameDir" | Out-Host
+# Deploy=false: packaging must work while the game (and its locked plugin DLL) is running.
+dotnet build $proj -c Release -nologo -p:GameDir="$GameDir" -p:Deploy=false | Out-Host
+if ($LASTEXITCODE -ne 0) { throw "Build failed" }
 $dll = Join-Path $root "src\DMDItemEditor\bin\Release\netstandard2.1\DMDItemEditor.dll"
 
 # BepInEx 5 x64 from the official release (LGPL-2.1, redistributable).

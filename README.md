@@ -72,7 +72,7 @@ dotnet build src/DMDItemEditor -c Release -p:GameDir="G:\Steam\steamapps\common\
 
 La DLL est copiée automatiquement dans `BepInEx\plugins\DMDItemEditor\` si BepInEx est présent.
 
-Pour produire les zips de distribution dans `dist/` (jeu fermé) :
+Pour produire les zips de distribution dans `dist/` (fonctionne aussi jeu lancé, sans redéployer) :
 
 ```bash
 pwsh tools/package.ps1
@@ -87,6 +87,9 @@ pwsh tools/package.ps1
   `EquipmentAbilityTracker` retire puis recrée les capacités à partir des nouveaux affixes.
 - Le patch `ItemSaveLoad.TryLoadFrom` garde les affixes, la rareté et le tier sauvegardés des uniques,
   que le jeu remplace sinon par ceux du modèle.
+- L'éditeur est un panneau IMGUI dessiné avec `GUI.depth = 10`, pas une `GUI.Window` : Unity peint les
+  fenêtres après tout le reste, ce qui cachait le curseur du jeu (dessiné par `CursorManager.OnGUI`).
+  Le curseur du jeu reste ainsi au-dessus de l'éditeur.
 - Butin : un préfixe sur `LootGenerator.ReGenerateWithDropChance` applique le taux, un postfixe sur
   `LootGenerator.ReGenerate` réécrit les recettes (raretés, tier, chance d'unique) et les duplique.
   `ItemGenerator.PickRandomRarity` est contourné pour ces recettes seulement, sinon le plafond de rareté

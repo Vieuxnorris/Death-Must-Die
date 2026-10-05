@@ -6,7 +6,7 @@
     <RootNamespace>DMDItemEditor</RootNamespace>
     <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <!-- Override on the command line: dotnet build -p:GameDir="D:\Games\Death Must Die" -->
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <!-- Copy the built plugin into the game's BepInEx/plugins folder. -->
-  <Target Name="DeployToGame" AfterTargets="Build" Condition="Exists('$(BepInExDir)')">
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="Exists('$(BepInExDir)') And '$(Deploy)' != 'false'">
     <MakeDir Directories="$(BepInExDir)\plugins\DMDItemEditor" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\DMDItemEditor" />
   </Target>

@@ -11,7 +11,7 @@ namespace DMDItemEditor
     {
         public const string Guid = "vieuxnorris.dmd.itemeditor";
         public const string Name = "DMD Item Editor";
-        public const string Version = "0.2.0";
+        public const string Version = "0.2.1";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<KeyboardShortcut> ToggleKey;

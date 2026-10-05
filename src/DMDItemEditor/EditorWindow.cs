@@ -79,23 +79,62 @@ namespace DMDItemEditor
             Plugin.Log.LogInfo(message);
         }
 
+        private const float TitleHeight = 22f;
+        private bool _dragging;
+        private Vector2 _dragOffset;
+
+        /// <summary>
+        /// Drawn as a plain panel rather than a GUI.Window: Unity paints windows after every OnGUI call, which
+        /// hid the game's own cursor (CursorManager draws it in OnGUI at depth 0). A higher GUI.depth keeps
+        /// this panel underneath it, so the real cursor stays on top.
+        /// </summary>
         public void OnGUI()
         {
             if (!_visible) return;
+            GUI.depth = 10;
             float scale = Plugin.UiScale.Value;
             Matrix4x4 previous = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
-            _rect = GUILayout.Window(0x444D44, _rect, DrawWindow, "Death Must Die : éditeur d'objets  (" + Plugin.ToggleKey.Value + ")", Styles.Window);
+
+            HandleDrag();
+            GUI.Box(_rect, "Death Must Die : éditeur d'objets  (" + Plugin.ToggleKey.Value + ")", Styles.Window);
+            GUILayout.BeginArea(new Rect(_rect.x + 8, _rect.y + TitleHeight + 4, _rect.width - 16, _rect.height - TitleHeight - 12));
+            DrawWindow();
+            GUILayout.EndArea();
+            // Swallow clicks on the panel so they don't reach IMGUI elements of the game underneath.
+            UnityEngine.Event ev = UnityEngine.Event.current;
+            if (_rect.Contains(ev.mousePosition) && (ev.type == EventType.MouseDown || ev.type == EventType.MouseUp)) ev.Use();
+
             GUI.matrix = previous;
         }
 
-        private void DrawWindow(int id)
+        private void HandleDrag()
+        {
+            UnityEngine.Event ev = UnityEngine.Event.current;
+            var title = new Rect(_rect.x, _rect.y, _rect.width, TitleHeight);
+            if (ev.type == EventType.MouseDown && ev.button == 0 && title.Contains(ev.mousePosition))
+            {
+                _dragging = true;
+                _dragOffset = ev.mousePosition - _rect.position;
+                ev.Use();
+            }
+            else if (_dragging && ev.type == EventType.MouseDrag)
+            {
+                _rect.position = ev.mousePosition - _dragOffset;
+                ev.Use();
+            }
+            else if (_dragging && (ev.type == EventType.MouseUp || ev.rawType == EventType.MouseUp))
+            {
+                _dragging = false;
+            }
+        }
+
+        private void DrawWindow()
         {
             if (!ItemAccess.IsReady)
             {
                 GUILayout.Label("Charge une partie (menu principal passé) puis rouvre l'éditeur.");
                 if (GUILayout.Button("Fermer")) Toggle();
-                GUI.DragWindow();
                 return;
             }
             if (!_catalog.IsBuilt) _catalog.Build();
@@ -126,7 +165,6 @@ namespace DMDItemEditor
                 // IMGUI layout mismatches after an exception are harmless; log the real cause once.
                 if (!(e is ArgumentException)) { Report("Erreur : " + e.Message); Plugin.Log.LogError(e); }
             }
-            GUI.DragWindow(new Rect(0, 0, 10000, 22));
         }
 
         private void Select(Item item, ItemSlot slot)
