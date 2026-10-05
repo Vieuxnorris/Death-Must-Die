@@ -1,13 +1,38 @@
 # Game data and decompiled game code: never commit
 extracted/
 backups/
+decompiled/
 *.sav
+*.assets
+*.resS
+*.resource
+# Game, BepInEx and built assemblies (the game's DLLs are not ours to redistribute)
+*.dll
+*.exe
+*.pdb
+BepInEx/
+# Text assets extracted from the game (tools/extract_textassets.py) and metadata dumps (tools/dumpmeta.ps1)
+*.csv
+*.meta.txt
+# Logs (BepInEx LogOutput.log, Unity Player.log) may contain local paths and user names
+*.log
+
+# Secrets and local settings
+.env
+.env.*
+*.pfx
+*.snk
+*.key
+Directory.Build.props.user
 
 # Build output
 bin/
 obj/
 *.user
 .vs/
+.vscode/
+.idea/
 
 # Release archives
 dist/
+*.zip
