@@ -253,7 +253,9 @@ namespace DMDItemEditor
 
         private static class Styles
         {
-            private static GUIStyle _leftButton, _title, _window;
+            private static GUIStyle _leftButton, _title, _window, _wrap;
+            public static GUIStyle Wrap =>
+                _wrap ??= new GUIStyle(GUI.skin.label) { wordWrap = true, richText = true };
 
             /// <summary>The default window skin is see-through over the game; use an opaque dark background.</summary>
             public static GUIStyle Window

@@ -19,7 +19,9 @@ SI F8 NE FAIT RIEN
   HideManagerGameObject = true
 
 DÉSINSTALLER
-Supprimer du dossier du jeu : le dossier BepInEx, winhttp.dll, doorstop_config.ini,
+D'abord, retirer le GOD affix de tous tes objets (F8) : sans le mod, le jeu supprime au
+chargement les objets qui le portent.
+Puis supprimer du dossier du jeu : le dossier BepInEx, winhttp.dll, doorstop_config.ini,
 .doorstop_version et changelog.txt. Les sauvegardes restent valides ; les uniques modifiés
 reprennent leurs valeurs d'origine.
 

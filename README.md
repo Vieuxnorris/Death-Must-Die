@@ -39,10 +39,22 @@ Sauvegarde d'abord `%USERPROFILE%\AppData\LocalLow\Realm Archive\Death Must Die\
   - Taux : drop garanti, multiplicateur de chance de drop, nombre d'objets par drop (x1 à x20).
   - Qualité : raretés autorisées (tirage égal entre les cases cochées), tier forcé T1 à T5,
     chance d'objet unique en %.
+  - Nombre d'affixes exact des objets normaux droppés (jusqu'à 30) : les affixes manquants sont des
+    affixes de stats tirés au hasard, au maximum de leur valeur.
+  - Chance qu'un drop porte le **GOD affix** (voir plus bas).
   - **Simuler 200 monstres tués** fait tourner le vrai générateur du jeu avec ces réglages et affiche
     la répartition obtenue, sans rien donner.
   - Les uniques n'existent qu'en T1 à T3 et ne tombent qu'au tier de l'acte. Les uniques Immortal sont
     réservés aux événements, donc un tirage Immortal donne un Mythic.
+- **GOD affix** : un vrai affixe ajouté au jeu par le mod, qui cumule les effets des 113 affixes de stats
+  positifs (dégâts, vitesse, critique, vie, armure, zone, chance, vitesse de déplacement...). N niveaux de GOD
+  donnent N niveaux de chacun. Au niveau 500 (défaut) : environ +200 % de dégâts, +200 % de vitesse d'attaque,
+  +35 % de critique, +500 PV et 105 autres bonus. Il s'ajoute depuis l'éditeur (bouton « ★ Ajouter GOD »),
+  depuis la liste des affixes, ou sur les drops. L'onglet Butin montre un aperçu de son infobulle.
+  - Les nombres de projectiles, rebonds, perforations et invocations sont exclus par défaut car ils peuvent
+    faire ramer le jeu (`GodAffix.IncludeProjectileCounts`, redémarrage nécessaire).
+  - **Attention** : si le mod est retiré, le jeu supprime au chargement les objets qui portent GOD.
+    Retire GOD de tes objets avant de désinstaller.
 - **Sauvegarder la partie** force une sauvegarde immédiate (le jeu sauvegarde aussi de lui-même).
 
 ### Limites qui restent
@@ -61,6 +73,8 @@ Sauvegarde d'abord `%USERPROFILE%\AppData\LocalLow\Realm Archive\Death Must Die\
 | `Items.PersistUniqueEdits` | `true` | Garder les modifications des uniques au chargement |
 | `Items.DefaultAffixLevels` | `10` | Niveaux par défaut d'un affixe ajouté |
 | `Loot.*` | désactivé | Réglages de l'onglet Butin (modifiables aussi à la main) |
+| `GodAffix.DefaultLevels` | `500` | Niveau du GOD affix ajouté |
+| `GodAffix.IncludeProjectileCounts` | `false` | Inclure projectiles, rebonds, invocations dans GOD |
 
 ## Compiler
 
@@ -94,4 +108,8 @@ pwsh tools/package.ps1
   `LootGenerator.ReGenerate` réécrit les recettes (raretés, tier, chance d'unique) et les duplique.
   `ItemGenerator.PickRandomRarity` est contourné pour ces recettes seulement, sinon le plafond de rareté
   du jeu pourrait vider le tirage. La boutique n'est pas touchée.
+- GOD : un postfixe sur `Database.Init` ajoute à `ItemAffixesTable` un `ItemAffix` dont le tableau
+  `Abilities` est la concaténation de celles des affixes de stats (même `StatGroup` que Damage %). Le texte
+  d'infobulle passe par un préfixe sur `LocalizationManager.GetAffixDescr`. Le nombre d'affixes et GOD sur
+  les drops sont appliqués par un postfixe sur `ItemGenerator.Generate`, pour les recettes du butin uniquement.
 - Notes de reverse détaillées : [MODDING_PLAN.md](MODDING_PLAN.md). Scripts d'analyse dans `tools/`.

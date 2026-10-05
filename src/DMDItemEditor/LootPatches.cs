@@ -20,6 +20,8 @@ namespace DMDItemEditor
         public static ConfigEntry<int> RarityMask;
         public static ConfigEntry<int> ForcedTier;
         public static ConfigEntry<float> UniqueChancePercent;
+        public static ConfigEntry<int> AffixCount;
+        public static ConfigEntry<float> GodChancePercent;
 
         public static void Bind(ConfigFile config)
         {
@@ -36,6 +38,11 @@ namespace DMDItemEditor
                 new ConfigDescription("Tier of dropped items, 1 to 5. 0 = the act's tier.", new AcceptableValueRange<int>(0, TierId.Count)));
             UniqueChancePercent = config.Bind("Loot", "UniqueChancePercent", -1f,
                 "Chance for a drop to be a unique, 0 to 100. -1 = vanilla.");
+            AffixCount = config.Bind("Loot", "AffixCount", 0,
+                new ConfigDescription("Exact number of affixes on dropped regular items, filled with full rolls. 0 = vanilla.",
+                    new AcceptableValueRange<int>(0, 60)));
+            GodChancePercent = config.Bind("Loot", "GodChancePercent", 0f,
+                "Chance for a dropped item to also carry the GOD affix, 0 to 100.");
         }
     }
 
@@ -51,6 +58,9 @@ namespace DMDItemEditor
 
         /// <summary>Rarity sets created by this patch; the generator's rarity cap is bypassed for them only.</summary>
         internal static readonly ConditionalWeakTable<object, object> ForcedRaritySets = new ConditionalWeakTable<object, object>();
+
+        /// <summary>Recipes rewritten by this patch: only their items get the affix-count and GOD changes.</summary>
+        internal static readonly ConditionalWeakTable<object, object> ForcedRecipes = new ConditionalWeakTable<object, object>();
 
         /// <summary>Same as vanilla, with the drop chance multiplied (or skipped when AlwaysDrop is on).</summary>
         [HarmonyPrefix]
@@ -88,6 +98,7 @@ namespace DMDItemEditor
                 {
                     ForceSubtype = r.ForceSubtype,
                 });
+                ForcedRecipes.Add(rewritten[rewritten.Count - 1], null);
             }
 
             loot.Clear();

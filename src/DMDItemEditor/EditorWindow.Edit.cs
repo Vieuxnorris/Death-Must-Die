@@ -139,6 +139,13 @@ namespace DMDItemEditor
                 MarkDirty();
             }
             if (GUILayout.Button("Tout supprimer", GUILayout.Width(120))) { affixes.Clear(); _levelBuffers.Clear(); MarkDirty(); }
+            if (GodAffix.IsRegistered && affixes.All(a => a.Code != GodAffix.AffixCode)
+                && GUILayout.Button("★ Ajouter GOD (niv. " + GodAffix.DefaultLevels.Value + ")", GUILayout.Width(190)))
+            {
+                ItemAccess.AddAffix(item, GodAffix.AffixCode, GodAffix.DefaultLevels.Value);
+                MarkDirty();
+                Report("GOD affix ajouté.");
+            }
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < affixes.Count; i++)

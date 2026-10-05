@@ -6,7 +6,7 @@
     <RootNamespace>DMDItemEditor</RootNamespace>
     <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>
-    <Version>0.2.1</Version>
+    <Version>0.3.0</Version>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <!-- Override on the command line: dotnet build -p:GameDir="D:\Games\Death Must Die" -->

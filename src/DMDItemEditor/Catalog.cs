@@ -29,6 +29,7 @@ namespace DMDItemEditor
         public void Build()
         {
             Dictionary<string, string> names = ReadAffixNames();
+            names[GodAffix.Code] = "★ GOD (tous les bonus de stats)";
             Affixes = Database.ItemAffixes.All
                 .Select(a =>
                 {

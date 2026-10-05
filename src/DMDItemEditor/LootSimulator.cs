@@ -22,7 +22,7 @@ namespace DMDItemEditor
 
             var loot = new LootGenerator(GlobalRng.Instance, TierId.First, TierId.First, Database.ItemDropsPerMin, Database.DarknessDropBonus.Get(0));
             ItemGenerator generator = Database.CreateItemGenerator();
-            int dropping = 0, items = 0, uniques = 0;
+            int dropping = 0, items = 0, uniques = 0, gods = 0, affixTotal = 0;
             var perRarity = new int[(int)ItemRarity._Count];
             var perTier = new int[TierId.Count];
 
@@ -38,6 +38,8 @@ namespace DMDItemEditor
                         if (item == null) continue;
                         items++;
                         if (item.IsUnique) uniques++;
+                        affixTotal += item.Affixes.Count;
+                        if (item.Affixes.Any(a => a.Code == GodAffix.AffixCode)) gods++;
                         perRarity[Math.Min((int)item.Rarity, perRarity.Length - 1)]++;
                         perTier[Math.Max(0, Math.Min(item.Tier.Index, perTier.Length - 1))]++;
                     }
@@ -46,6 +48,7 @@ namespace DMDItemEditor
 
             var sb = new StringBuilder();
             sb.Append($"{kills} « {monster.Code} » tués (acte T1) : {dropping} ont droppé, {items} objets, dont {uniques} uniques.\n");
+            sb.Append($"Affixes par objet : {(items > 0 ? (float)affixTotal / items : 0f):0.0} en moyenne. Objets avec GOD affix : {gods}.\n");
             sb.Append("Raretés : ");
             for (int i = 0; i < perRarity.Length; i++) sb.Append($"{(ItemRarity)i} {perRarity[i]}   ");
             sb.Append("\nTiers : ");

@@ -11,7 +11,7 @@ namespace DMDItemEditor
     {
         public const string Guid = "vieuxnorris.dmd.itemeditor";
         public const string Name = "DMD Item Editor";
-        public const string Version = "0.2.1";
+        public const string Version = "0.3.0";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<KeyboardShortcut> ToggleKey;
@@ -35,17 +35,32 @@ namespace DMDItemEditor
                 "Levels given to an affix when it is added from the editor.");
 
             LootSettings.Bind(Config);
+            GodAffix.Bind(Config);
 
             new Harmony(Guid).PatchAll(typeof(Plugin).Assembly);
             _window = new EditorWindow();
             Log.LogInfo($"{Name} {Version} loaded. Press {ToggleKey.Value} in game.");
         }
 
-        private bool _firstUpdateLogged;
+        private bool _firstUpdateLogged, _godChecked;
 
         private void Update()
         {
-            if (!_firstUpdateLogged) { _firstUpdateLogged = true; Log.LogInfo("Update loop running."); }
+            if (!_firstUpdateLogged)
+            {
+                _firstUpdateLogged = true;
+                Log.LogInfo("Update loop running.");
+            }
+            // Normally registered by the Database.Init patch; this covers a database loaded before the plugin.
+            if (!_godChecked && Death.Data.Database.IsLoaded)
+            {
+                _godChecked = true;
+                if (!GodAffix.IsRegistered)
+                {
+                    Log.LogWarning("Database was loaded before the plugin: registering the GOD affix late.");
+                    GodAffix.Register(Death.Data.Database.ItemAffixes);
+                }
+            }
             if (ToggleKey.Value.IsDown()) _window.Toggle();
             _window.Update();
         }

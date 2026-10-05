@@ -7,7 +7,7 @@ namespace DMDItemEditor
     internal sealed partial class EditorWindow
     {
         private static readonly string[] TierChoices = { "Selon l'acte", "T1", "T2", "T3", "T4", "T5" };
-        private string _dropMultText, _uniqueText, _simulation;
+        private string _dropMultText, _uniqueText, _simulation, _godChanceText, _godLevelText, _godPreview;
 
         /// <summary>"Butin" tab: drop rate and drop quality for monster loot. Changes apply to the next kills.</summary>
         private void DrawLootPanel()
@@ -72,7 +72,49 @@ namespace DMDItemEditor
             GUILayout.Label("(vide = normal)");
             GUILayout.EndHorizontal();
 
-            GUI.enabled = true;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Nombre d'affixes (objets normaux)", GUILayout.Width(260));
+            int count = LootSettings.AffixCount.Value;
+            GUILayout.Label(count == 0 ? "normal" : count.ToString(), GUILayout.Width(50));
+            LootSettings.AffixCount.Value = Mathf.RoundToInt(GUILayout.HorizontalSlider(count, 0, 30, GUILayout.Width(300)));
+            GUILayout.Label("  ajoutés au maximum de leur valeur");
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(8);
+            GUILayout.BeginHorizontal();
+            Color oldColor = GUI.contentColor;
+            GUI.contentColor = new Color(1f, 0.25f, 0.25f);
+            GUILayout.Label("★ GOD affix", Styles.Title, GUILayout.Width(260));
+            GUI.contentColor = oldColor;
+            GUILayout.Label(GodAffix.IsRegistered ? "cumule les bonus de tous les affixes de stats du jeu" : "(non chargé)");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Chance qu'un drop ait le GOD affix (%)", GUILayout.Width(260));
+            _godChanceText ??= LootSettings.GodChancePercent.Value.ToString(CultureInfo.InvariantCulture);
+            _godChanceText = GUILayout.TextField(_godChanceText, GUILayout.Width(80));
+            if (float.TryParse(_godChanceText.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out float g))
+                LootSettings.GodChancePercent.Value = Mathf.Clamp(g, 0f, 100f);
+            GUILayout.EndHorizontal();
+
+            GUI.enabled = true; // the GOD level is also used by the editor's "Ajouter GOD" button
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Niveau du GOD affix", GUILayout.Width(260));
+            _godLevelText ??= GodAffix.DefaultLevels.Value.ToString();
+            _godLevelText = GUILayout.TextField(_godLevelText, GUILayout.Width(80));
+            if (int.TryParse(_godLevelText, out int gl) && gl > 0) GodAffix.DefaultLevels.Value = gl;
+            GUILayout.Label("(chaque stat reçoit ce nombre de niveaux)");
+            if (GodAffix.IsRegistered && GUILayout.Button("Aperçu de l'infobulle", GUILayout.Width(160)))
+            {
+                try { _godPreview = GodAffix.PreviewTooltip(GodAffix.DefaultLevels.Value, TierId.FromIndex(TierId.Count - 1)); }
+                catch (System.Exception e) { _godPreview = "Erreur : " + e.Message; Plugin.Log.LogError(e); }
+                Plugin.Log.LogInfo("GOD tooltip preview: " + _godPreview);
+            }
+            GUILayout.EndHorizontal();
+            // <nobr> is a TextMeshPro tag the game's tooltip understands; IMGUI would print it.
+            if (!string.IsNullOrEmpty(_godPreview))
+                GUILayout.Label(_godPreview.Replace("<nobr>", "").Replace("</nobr>", ""), Styles.Wrap);
+
             GUILayout.Space(10);
             GUILayout.Label("Vérifier sans combattre", Styles.Title);
             if (GUILayout.Button("Simuler 200 monstres tués avec ces réglages", GUILayout.Width(360)))
@@ -91,8 +133,11 @@ namespace DMDItemEditor
                 LootSettings.RarityMask.Value = 0;
                 LootSettings.ForcedTier.Value = 0;
                 LootSettings.UniqueChancePercent.Value = -1f;
+                LootSettings.AffixCount.Value = 0;
+                LootSettings.GodChancePercent.Value = 0f;
                 _dropMultText = null;
                 _uniqueText = null;
+                _godChanceText = null;
             }
             GUILayout.EndVertical();
         }
