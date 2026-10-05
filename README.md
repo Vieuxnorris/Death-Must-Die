@@ -120,3 +120,9 @@ pwsh tools/package.ps1
   d'infobulle passe par un préfixe sur `LocalizationManager.GetAffixDescr`. Le nombre d'affixes et GOD sur
   les drops sont appliqués par un postfixe sur `ItemGenerator.Generate`, pour les recettes du butin uniquement.
 - Notes de reverse détaillées : [MODDING_PLAN.md](MODDING_PLAN.md). Scripts d'analyse dans `tools/`.
+
+## Licence
+
+Code sous licence [MIT](LICENSE). Projet de fan non officiel, sans lien avec les développeurs ou l'éditeur
+de Death Must Die ; le jeu et ses contenus restent la propriété de leurs auteurs. BepInEx, inclus dans le
+zip de release, est distribué sous sa propre licence (LGPL-2.1).
