@@ -72,10 +72,11 @@ namespace DMDItemEditor
                 affixes.Add(new Item.AffixReference(pick.Code, levels, enhanced: true));
             }
 
-            // Not enough distinct groups left: allow repeats of a group with different affixes.
+            // Not enough distinct groups left: allow repeats of a group with different affixes,
+            // still limited to affixes the item's rarity allows.
             pool = Database.ItemAffixes.All
-                .Where(a => IsStatAffix(a) && !affixes.Any(x => x.Code == a.Code) && a.GetMaxVal(item.Type, item.Tier) > 0
-                            && a.ValueCostPerLevel(item.Tier) > 0)
+                .Where(a => IsStatAffix(a) && a.MinRarity <= item.Rarity && !affixes.Any(x => x.Code == a.Code)
+                            && a.GetMaxVal(item.Type, item.Tier) > 0 && a.ValueCostPerLevel(item.Tier) > 0)
                 .ToList();
             while (affixes.Count < count && pool.Count > 0)
             {

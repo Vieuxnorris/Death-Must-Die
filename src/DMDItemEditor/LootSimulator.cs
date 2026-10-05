@@ -4,7 +4,7 @@ using System.Text;
 using Death.Data;
 using Death.Items;
 using Death.Run.Core;
-using Death.Utils;
+using Claw.Core.Chaos;
 
 namespace DMDItemEditor
 {
@@ -20,8 +20,15 @@ namespace DMDItemEditor
                 m.Loot != null && m.Loot.ItemDropChance > 0f && !m.Loot.ItemCountProbability.IsEmpty && !m.Loot.TreasureClassProbability.IsEmpty);
             if (monster == null) return "Aucun monstre avec du butin trouvé.";
 
-            var loot = new LootGenerator(GlobalRng.Instance, TierId.First, TierId.First, Database.ItemDropsPerMin, Database.DarknessDropBonus.Get(0));
-            ItemGenerator generator = Database.CreateItemGenerator();
+            // A private RNG: the game's GlobalRng and UnityEngine.Random (which Database.CreateItemGenerator
+            // seeds from) drive live gameplay, and a preview must not shift their sequences.
+            var rng = new NoiseRng(unchecked((uint)Environment.TickCount));
+            var loot = new LootGenerator(rng, TierId.First, TierId.First, Database.ItemDropsPerMin, Database.DarknessDropBonus.Get(0));
+            var generator = new ItemGenerator(Database.ItemAffixes, Database.ItemArchetypes, Database.ItemTreasureClasses,
+                Database.ItemSubtypes, Database.ItemUniques, new NoiseRng(rng.Seed ^ 0x9E3779B9u))
+            {
+                HighestAllowedRarity = Database.HighestAllowedRarity,
+            };
             int dropping = 0, items = 0, uniques = 0, gods = 0, affixTotal = 0;
             var perRarity = new int[(int)ItemRarity._Count];
             var perTier = new int[TierId.Count];
