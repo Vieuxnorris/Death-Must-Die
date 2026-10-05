@@ -35,6 +35,14 @@ Sauvegarde d'abord `%USERPROFILE%\AppData\LocalLow\Realm Archive\Death Must Die\
   Les objets équipés sont réappliqués automatiquement (stats et capacités recalculées).
 - Onglet **Créer** : choisir une base pour créer un brouillon, l'éditer, puis l'ajouter au sac ou au coffre.
   La liste des uniques permet de les donner tels quels ou de les éditer avant de les donner.
+- Onglet **Butin** : règle le butin des monstres (désactivé par défaut, réglages gardés entre les parties).
+  - Taux : drop garanti, multiplicateur de chance de drop, nombre d'objets par drop (x1 à x20).
+  - Qualité : raretés autorisées (tirage égal entre les cases cochées), tier forcé T1 à T5,
+    chance d'objet unique en %.
+  - **Simuler 200 monstres tués** fait tourner le vrai générateur du jeu avec ces réglages et affiche
+    la répartition obtenue, sans rien donner.
+  - Les uniques n'existent qu'en T1 à T3 et ne tombent qu'au tier de l'acte. Les uniques Immortal sont
+    réservés aux événements, donc un tirage Immortal donne un Mythic.
 - **Sauvegarder la partie** force une sauvegarde immédiate (le jeu sauvegarde aussi de lui-même).
 
 ### Limites qui restent
@@ -52,6 +60,7 @@ Sauvegarde d'abord `%USERPROFILE%\AppData\LocalLow\Realm Archive\Death Must Die\
 | `General.UiScale` | `1` | Échelle de la fenêtre (0.5 à 3) |
 | `Items.PersistUniqueEdits` | `true` | Garder les modifications des uniques au chargement |
 | `Items.DefaultAffixLevels` | `10` | Niveaux par défaut d'un affixe ajouté |
+| `Loot.*` | désactivé | Réglages de l'onglet Butin (modifiables aussi à la main) |
 
 ## Compiler
 
@@ -78,4 +87,8 @@ pwsh tools/package.ps1
   `EquipmentAbilityTracker` retire puis recrée les capacités à partir des nouveaux affixes.
 - Le patch `ItemSaveLoad.TryLoadFrom` garde les affixes, la rareté et le tier sauvegardés des uniques,
   que le jeu remplace sinon par ceux du modèle.
+- Butin : un préfixe sur `LootGenerator.ReGenerateWithDropChance` applique le taux, un postfixe sur
+  `LootGenerator.ReGenerate` réécrit les recettes (raretés, tier, chance d'unique) et les duplique.
+  `ItemGenerator.PickRandomRarity` est contourné pour ces recettes seulement, sinon le plafond de rareté
+  du jeu pourrait vider le tirage. La boutique n'est pas touchée.
 - Notes de reverse détaillées : [MODDING_PLAN.md](MODDING_PLAN.md). Scripts d'analyse dans `tools/`.

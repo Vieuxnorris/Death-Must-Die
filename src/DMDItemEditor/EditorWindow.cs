@@ -10,10 +10,10 @@ namespace DMDItemEditor
     /// <summary>IMGUI window: pick an item on the left, edit everything about it on the right.</summary>
     internal sealed partial class EditorWindow
     {
-        private enum Source { Equipped, Backpack, Stash1, Stash2, Stash3, Stash4, Library, AllOwned, Create }
+        private enum Source { Equipped, Backpack, Stash1, Stash2, Stash3, Stash4, Library, AllOwned, Create, Loot }
 
         private static readonly string[] SourceLabels =
-            { "Équipé", "Sac", "Coffre 1", "Coffre 2", "Coffre 3", "Coffre 4", "Bibliothèque", "Tous", "Créer" };
+            { "Équipé", "Sac", "Coffre 1", "Coffre 2", "Coffre 3", "Coffre 4", "Bibliothèque", "Tous", "Créer", "Butin" };
 
         private static readonly Color[] RarityColors =
         {
@@ -81,13 +81,6 @@ namespace DMDItemEditor
 
         public void OnGUI()
         {
-            // Fallback for the toggle key: IMGUI receives key events even when Unity's legacy Input misses them.
-            UnityEngine.Event ev = UnityEngine.Event.current;
-            if (ev.type == EventType.KeyDown && ev.keyCode == Plugin.ToggleKey.Value.MainKey && Time.unscaledTime - _lastToggle > 0.2f)
-            {
-                Toggle();
-                ev.Use();
-            }
             if (!_visible) return;
             float scale = Plugin.UiScale.Value;
             Matrix4x4 previous = GUI.matrix;
@@ -112,12 +105,19 @@ namespace DMDItemEditor
                 int src = GUILayout.Toolbar((int)_source, SourceLabels);
                 if (src != (int)_source) { _source = (Source)src; Select(null, null); }
 
-                GUILayout.BeginHorizontal();
-                if (_source == Source.Create) DrawCreatePanel();
-                else DrawItemList();
-                GUILayout.Space(8);
-                DrawEditorPanel();
-                GUILayout.EndHorizontal();
+                if (_source == Source.Loot)
+                {
+                    DrawLootPanel();
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    if (_source == Source.Create) DrawCreatePanel();
+                    else DrawItemList();
+                    GUILayout.Space(8);
+                    DrawEditorPanel();
+                    GUILayout.EndHorizontal();
+                }
 
                 DrawFooter();
             }

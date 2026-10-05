@@ -11,7 +11,7 @@ namespace DMDItemEditor
     {
         public const string Guid = "vieuxnorris.dmd.itemeditor";
         public const string Name = "DMD Item Editor";
-        public const string Version = "0.1.0";
+        public const string Version = "0.2.0";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<KeyboardShortcut> ToggleKey;
@@ -33,6 +33,8 @@ namespace DMDItemEditor
                 "When false, uniques are rebuilt from their template like in the vanilla game.");
             DefaultAffixLevels = Config.Bind("Items", "DefaultAffixLevels", 10,
                 "Levels given to an affix when it is added from the editor.");
+
+            LootSettings.Bind(Config);
 
             new Harmony(Guid).PatchAll(typeof(Plugin).Assembly);
             _window = new EditorWindow();
