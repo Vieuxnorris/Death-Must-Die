@@ -43,6 +43,7 @@ $pluginDir = Join-Path $full "BepInEx\plugins\DMDItemEditor"
 New-Item -ItemType Directory -Force $pluginDir | Out-Null
 Copy-Item $dll $pluginDir
 Copy-Item (Join-Path $root "LISEZMOI.txt") $full
+Copy-Item (Join-Path $root "LICENSE") $pluginDir
 
 $fullZip = Join-Path $dist "DMDItemEditor-$version.zip"
 Compress-Archive -Path (Join-Path $full "*") -DestinationPath $fullZip -Force
@@ -50,6 +51,7 @@ Compress-Archive -Path (Join-Path $full "*") -DestinationPath $fullZip -Force
 $only = Join-Path $work "plugin-only"
 New-Item -ItemType Directory -Force (Join-Path $only "BepInEx\plugins\DMDItemEditor") | Out-Null
 Copy-Item $dll (Join-Path $only "BepInEx\plugins\DMDItemEditor")
+Copy-Item (Join-Path $root "LICENSE") (Join-Path $only "BepInEx\plugins\DMDItemEditor")
 $onlyZip = Join-Path $dist "DMDItemEditor-$version-plugin-only.zip"
 Compress-Archive -Path (Join-Path $only "*") -DestinationPath $onlyZip -Force
 
