@@ -6,7 +6,17 @@ quel nombre de niveaux), création d'objets, don d'uniques, duplication et suppr
 
 Testé sur Death Must Die buildid Steam 21650210 (Unity 2021.3.11, Mono x64) avec BepInEx 5.4.23.5.
 
-## Installation
+## Installation (joueurs)
+
+1. Télécharger `DMDItemEditor-<version>.zip` (il contient BepInEx 5, sa configuration et le plugin).
+2. Dans Steam : clic droit sur Death Must Die > Gérer > Parcourir les fichiers locaux.
+3. Extraire tout le contenu du zip dans ce dossier, à côté de `Death Must Die.exe`.
+4. Lancer le jeu et appuyer sur **F8**.
+
+Les détails (dépannage, désinstallation) sont dans [LISEZMOI.txt](LISEZMOI.txt), inclus dans le zip.
+Si BepInEx 5 est déjà installé, `DMDItemEditor-<version>-plugin-only.zip` suffit, avec le réglage du point 3 ci-dessous.
+
+## Installation manuelle
 
 1. Installer [BepInEx 5 x64](https://github.com/BepInEx/BepInEx/releases) dans le dossier du jeu
    (là où se trouve `Death Must Die.exe`), voir la
@@ -52,6 +62,12 @@ dotnet build src/DMDItemEditor -c Release -p:GameDir="G:\Steam\steamapps\common\
 ```
 
 La DLL est copiée automatiquement dans `BepInEx\plugins\DMDItemEditor\` si BepInEx est présent.
+
+Pour produire les zips de distribution dans `dist/` (jeu fermé) :
+
+```bash
+pwsh tools/package.ps1
+```
 
 ## Comment ça marche
 
